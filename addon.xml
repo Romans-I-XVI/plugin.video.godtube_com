@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+ id="plugin.video.godtube_com"
+    version="0.1.0"
+    name="Godtube"
+    provider-name="Romans I XVI"
+    >
+    <requires>
+        <import addon="xbmc.python" version="2.1.0"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <language />
+        <summary>XBMC Godtube Addon</summary>
+        <description>Plugin that allows you to browse and play videos from everybody's favorite christian video site!</description>
+        <platform>all</platform>
+	<license>GNU GENERAL PUBLIC LICENSE. Version 3, 29 June 2007</license>
+	<forum>http://forum.xbmc.org/showthread.php?tid=162703</forum>
+	<source>https://github.com/asojka09/plugin.video.itbn_org.git</source>
+	<email>austinsojka@hotmail.com</email>
+    </extension>
+</addon>
+
