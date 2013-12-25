@@ -94,7 +94,7 @@ def ADDLINKS(url):
 			if "/resource/user/profile" not in thumbnail:
 				totalpercent=totalpercent+percent
 				xbmc.log('test'+str(totalpercent))
-				pDialog.update(totalpercent, 'Importing modules...')
+				pDialog.update(totalpercent, 'Loading Videos...')
                         	addLink(name,url,thumbnail)
                 if nextpage:
                         addDir('More',nextpage,1,next_thumb)      
