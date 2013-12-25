@@ -142,9 +142,10 @@ def ArtistDirectory(url):
 	response.close()
 	match=re.compile('<a href="http://www.godtube.com/artist/(.+?)">').findall(link)
 	for artist in match:
-		title=artist.replace('-',' ')
-		title=title.replace('/','')
-		addDir(title,base_url+'/artist/'+artist,1,'')
+		title1=artist.replace('/','')
+		title=title1.replace('-',' ')
+		thumbnail='http://www.godtube.com/resource/user/profile/'+title1+'.jpg'
+		addDir(title,base_url+'/artist/'+artist,1,thumbnail)
 	
 
 ##############################################################################################################
