@@ -3,3 +3,5 @@ Version 0.1.0
 -Added search function
 Version 0.2.0
 -Added search history
+Version 0.3.0
+-Added category browsing

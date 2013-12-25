@@ -19,6 +19,7 @@ base_url='http://www.godtube.com'
 ##################################################################################################################################
 
 def MAIN():
+	addDir('Explore GodTube',base_url,3, search_thumb)
         addDir('Search',base_url,2, search_thumb)
 	if 1==1:
                 xbmc.executebuiltin('Container.SetViewMode(50)')
@@ -55,19 +56,26 @@ def ADDLINKS(url):
                 link=response.read()
                 response.close()
 #		match=re.compile('<img src="http://cdn.salemweb.net/godtube/.+?/.+?/.+?/(.+?).jpg".+?mediakey=').findall(link)
-		name=re.compile('class="name".+?>(.+?)</a>').findall(link)
-		date=re.compile('<span class="links relativeTimespan">(.+?)T').findall(link)
-		description=re.compile('<span class="description">(.+?)</span>').findall(link)
+		name=re.compile('<a class="image" title="(.+?)"').findall(link)
+		try:
+			name[0]
+			name=unique(name)
+		except:
+			name=re.compile('class="name".+?>(.+?)</a>').findall(link)
+#		date=re.compile('<span class="links relativeTimespan">(.+?)T').findall(link)
+#		description=re.compile('<span class="description">(.+?)</span>').findall(link)
 		thumbnail=re.compile('<img src="(.+?)".+?mediakey=').findall(link)
+		thumbnail=unique(thumbnail)
 		nextpage=re.compile('</ul></div><a href="(.+?)".+?<span>Next</span>').findall(link)
+		xbmc.log('blah'+str(thumbnail))
 		try:
 			nextpage=nextpage[0]
 			nextpage=nextpage.replace('&amp;','&')
 			nextpage=nextpage.replace(' ','+')
 		except:
 			pass
-		mylist=zip((name),(thumbnail),(description),(date))
-		for name,thumbnail,description,date in mylist:
+		mylist=zip((name),(thumbnail))
+		for name,thumbnail in mylist:
 			if "_" in thumbnail:
 				url = re.compile('(.+?_.+?)_').findall(thumbnail)
 			if "-" in thumbnail:
@@ -79,7 +87,7 @@ def ADDLINKS(url):
 			except:
 				url=url+'.flv'
 			if "/resource/user/profile" not in thumbnail:
-                        	addLink(name+' - '+description +' ('+date+')',url,thumbnail)
+                        	addLink(name,url,thumbnail)
                 if nextpage:
                         addDir('More',nextpage,1,next_thumb)
 		if settings.getSetting("thumbnailviewmode") == 'true':        
@@ -112,6 +120,38 @@ def Search(url):
                 xbmc.executebuiltin('Container.SetViewMode(50)')	
 
 ##############################################################################################################
+
+def Categories(url):
+	addDir('Artist Directory',base_url+'/artists-directory/',4,'')
+	addDir('Music Videos',base_url+'/music-videos/',1,'')	
+	addDir('Ministry Videos',base_url+'/ministry-videos/',1,'')
+	addDir('Inspirational Videos',base_url+'/inspirational-videos/',1,'')
+	addDir('Comedy Videos',base_url+'/comedy-videos/',1,'')
+	addDir('Cutes Videos',base_url+'/cute-videos/',1,'')
+	addDir('Movies',base_url+'/movies/',1,'')
+	addDir('Sermons',base_url+'/sermon-videos/',1,'')
+	addDir('Spanish',base_url+'/espa%C3%B1ol-videos/',1,'')
+	if 1==1:
+                xbmc.executebuiltin('Container.SetViewMode(50)')
+
+def ArtistDirectory(url):
+	req = urllib2.Request(url)
+        req.add_header('User-Agent', 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3')
+	response = urllib2.urlopen(req)
+	link=response.read()
+	response.close()
+	match=re.compile('<a href="http://www.godtube.com/artist/(.+?)">').findall(link)
+	for artist in match:
+		title=artist.replace('-',' ')
+		title=title.replace('/','')
+		addDir(title,base_url+'/artist/'+artist,1,'')
+	
+
+##############################################################################################################
+
+def unique(a):
+    seen = set()
+    return [seen.add(x) or x for x in a if x not in seen]
                
 def get_params():
         param=[]
@@ -200,11 +240,11 @@ elif mode==2:
 
 elif mode==3:
         print ""+url
-        CATEGORIES(url)
+        Categories(url)
 
 elif mode==4:
         print ""+url
-        FAITHISSUES(url)
+        ArtistDirectory(url)
 
 elif mode==5:
         print ""+url
