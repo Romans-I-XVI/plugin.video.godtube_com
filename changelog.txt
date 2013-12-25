@@ -1,3 +1,5 @@
 Version 0.1.0
 -First version
 -Added search function
+Version 0.2.0
+-Added search history

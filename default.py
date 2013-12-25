@@ -1,4 +1,11 @@
-import urllib,urllib2,re,xbmcplugin,xbmcgui,os,xbmcaddon,sys
+import urllib,urllib2,re,xbmcplugin,xbmcgui,os,xbmcaddon,sys,xbmcvfs
+dbg = True
+try:
+	import StorageServer
+	cache = StorageServer.StorageServer("GodTube")
+except:
+	import storageserverdummy as StorageServer
+	cache = StorageServer.StorageServer("GodTube")
 
 settings = xbmcaddon.Addon( id = 'plugin.video.itbn_org' )
 next_thumb = os.path.join( settings.getAddonInfo( 'path' ), 'resources', 'media', 'nextpage.png' )
@@ -12,7 +19,7 @@ base_url='http://www.godtube.com'
 ##################################################################################################################################
 
 def MAIN():
-        addDir('Search',base_url+'/search/?q=',1, search_thumb, search_function=1)
+        addDir('Search',base_url,2, search_thumb)
 	if 1==1:
                 xbmc.executebuiltin('Container.SetViewMode(50)')
 
@@ -24,8 +31,22 @@ def ADDLINKS(url):
         	keyboard.doModal()
         if search_function == 0 or keyboard.isConfirmed() and keyboard.getText():
 		if search_function == 1:
+			search_list=[]
+			search_hist = cache.get('Search')
+			try:
+                		search_list = eval(search_hist)
+			except:
+				search_list.insert(0, search_hist)
 			search_string = keyboard.getText().replace(" ","+")
                 	content = url+search_string
+			try:			
+				if search_string not in search_list:
+					search_list.insert(0, search_string)
+				if len(search_list) > 12:
+                			del search_list[12]
+        			cache.set('Search', str(search_list))
+			except:
+				pass
 		else:
 			content = url
                 req = urllib2.Request(content)
@@ -34,8 +55,8 @@ def ADDLINKS(url):
                 link=response.read()
                 response.close()
 #		match=re.compile('<img src="http://cdn.salemweb.net/godtube/.+?/.+?/.+?/(.+?).jpg".+?mediakey=').findall(link)
-		name=re.compile('<a.+?class="name".+?>(.+?)</a>').findall(link)
-		date=re.compile('<span class="links relativeTimespan">(.+?)</span>').findall(link)
+		name=re.compile('class="name".+?>(.+?)</a>').findall(link)
+		date=re.compile('<span class="links relativeTimespan">(.+?)T').findall(link)
 		description=re.compile('<span class="description">(.+?)</span>').findall(link)
 		thumbnail=re.compile('<img src="(.+?)".+?mediakey=').findall(link)
 		nextpage=re.compile('</ul></div><a href="(.+?)".+?<span>Next</span>').findall(link)
@@ -45,44 +66,18 @@ def ADDLINKS(url):
 			nextpage=nextpage.replace(' ','+')
 		except:
 			pass
-#		nextpagelabelurl=re.compile('<div class=\'btn_container\'><a href=\'.+?/page/(.+?.+?.+?)').findall(link)
-#		if nextpage:
-#			nextpagelabel=nextpagelabelurl[0]
-#			nextpagelabel=re.sub("\D", "", nextpagelabel)
-#		previouspage=re.compile('class=\'btn_first\'>&lt;&lt;</a></li><li><a href=\'(.+?)\' class=\'btn_prev\'>').findall(link)
-#		previouspagelabelurl=re.compile('class=\'btn_first\'>&lt;&lt;</a></li><li><a href=\'.+?/page/(.+?)\' class=\'btn_prev\'>').findall(link)
-#                if previouspage:
-#			previouspagelabel=previouspagelabelurl[0]
-#			previouspagelabel=re.sub("\D", "", previouspagelabel)
-#		source=zip((prefix),(match),(suffix))
 		mylist=zip((name),(thumbnail),(description),(date))
-#                addDir('Main Menu','',None,main_menu_thumb)
-#                if previouspage:
-#                        addDir('Page '+previouspagelabel,'http://www.itbn.org'+previouspage[0],1,next_thumb)
 		for name,thumbnail,description,date in mylist:
-#			description=description.replace("&quot;","\"")
-#			description=description.replace("&#039;","\'")
-#			description=description.replace("&hellip;","...")
-#			description=description.replace("&amp;","&")
-#			description=description.split('\"', 1)[-1]
-#			description=description.replace('\"','')
-#			description=description.replace(',','')
-#			name=reduce(lambda rst, d: rst * 1 + d, (name))
-#			name=name.replace("&quot;","\"")
-#			name=name.replace("&#039;","\'")
-#			name=name.replace("&hellip;","...")
-#			name=name.replace("&amp;","&")
-#			url=reduce(lambda rst, d: rst * 1 + d, (url))
 			if "_" in thumbnail:
 				url = re.compile('(.+?_.+?)_').findall(thumbnail)
 			if "-" in thumbnail:
 				url = re.compile('(.+?)-').findall(thumbnail)
 			url = url[0]				
 			try:
-  				f = urllib2.urlopen(urllib2.Request(url+'.flv'))
-				url = url+'.flv'
+  				urllib2.urlopen(urllib2.Request(url+'.mp4'))
+				url = url+'.mp4'
 			except:
-				url=url+'.mp4'
+				url=url+'.flv'
 			if "/resource/user/profile" not in thumbnail:
                         	addLink(name+' - '+description +' ('+date+')',url,thumbnail)
                 if nextpage:
@@ -94,8 +89,27 @@ def ADDLINKS(url):
 			if 1==1:
 				xbmc.executebuiltin('Container.SetViewMode(50)')
         else:
-                MAIN()
+		PREVIOUS()
 
+
+##############################################################################################################
+
+def Search(url):
+	search_list=[]
+	search_hist = cache.get('Search')
+	try:
+                search_list = eval(search_hist)
+	except:
+		search_list.insert(0, search_hist)	
+        addDir('Search...',base_url+'/search/?q=',1, search_thumb, search_function=1)
+	try:
+		for name in search_list:
+			title = name.replace('+',' ')
+			addDir(title,base_url+'/search/?q='+str(name),1, search_thumb, search_function=0)
+	except:
+		pass		
+	if 1==1:
+                xbmc.executebuiltin('Container.SetViewMode(50)')	
 
 ##############################################################################################################
                
@@ -182,7 +196,7 @@ elif mode==1:
         
 elif mode==2:
         print ""+url
-        GETSOURCE(url,name)
+        Search(url)
 
 elif mode==3:
         print ""+url
