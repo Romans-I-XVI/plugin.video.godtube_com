@@ -1,4 +1,0 @@
-<settings>
-	<category label="General">
-	<setting id="thumbnailviewmode" type="bool" label="Thumbnail View" default="true" /></category>
-</settings>
