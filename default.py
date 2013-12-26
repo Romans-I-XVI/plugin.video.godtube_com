@@ -1,5 +1,5 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,os,xbmcaddon,sys,xbmcvfs
-dbg = True
+dbg = False
 try:
 	import StorageServer
 	cache = StorageServer.StorageServer("GodTube")
@@ -20,8 +20,6 @@ base_url='http://www.godtube.com'
 def MAIN():
 	addDir('Explore GodTube',base_url,3, browse_thumb)
         addDir('Search',base_url,2, search_thumb)
-	if 1==1:
-                xbmc.executebuiltin('Container.SetViewMode(50)')
 
 ##################################################################################################################################
         
@@ -71,7 +69,7 @@ def ADDLINKS(url):
 			pass
 		mylist=zip((name),(thumbnail))
 		pDialog = xbmcgui.DialogProgress()
-		pDialog.create('XBMC', 'Initializing script...')
+		pDialog.create('GodTube', 'Initializing script...')
 		try:
 			percent=len(mylist)
 			percent=100/float(percent)
@@ -93,13 +91,10 @@ def ADDLINKS(url):
 				url=url+'.flv'
 			if "/resource/user/profile" not in thumbnail:
 				totalpercent=totalpercent+percent
-				xbmc.log('test'+str(totalpercent))
 				pDialog.update(totalpercent, 'Loading Videos...')
                         	addLink(name,url,thumbnail)
                 if nextpage:
-                        addDir('More',nextpage,1,next_thumb)      
-		if 1==1:
-                	xbmc.executebuiltin('Container.SetViewMode(500)')
+                        addDir('More',nextpage,1,next_thumb)
 
         else:
 		PREVIOUS()
@@ -121,9 +116,7 @@ def Search(url):
 				title = name.replace('+',' ')
 				addDir(title,base_url+'/search/?q='+str(name),1, search_thumb, search_function=0)
 	except:
-		pass		
-	if 1==1:
-                xbmc.executebuiltin('Container.SetViewMode(50)')	
+		pass	
 
 ##############################################################################################################
 
@@ -133,11 +126,10 @@ def Categories(url):
 	addDir('Ministry Videos',base_url+'/ministry-videos/',1,browse_thumb)
 	addDir('Inspirational Videos',base_url+'/inspirational-videos/',1,browse_thumb)
 	addDir('Comedy Videos',base_url+'/comedy-videos/',1,browse_thumb)
-	addDir('Cutes Videos',base_url+'/cute-videos/',1,browse_thumb)
+	addDir('Cute Videos',base_url+'/cute-videos/',1,browse_thumb)
 	addDir('Movies',base_url+'/movies/',1,browse_thumb)
 	addDir('Sermons',base_url+'/sermon-videos/',1,browse_thumb)
-	if 1==1:
-                xbmc.executebuiltin('Container.SetViewMode(50)')
+	addDir('Spanish',base_url+'/espa%C3%B1ol-videos/',1,'')
 
 ##################################################################################################################################
 
@@ -153,8 +145,6 @@ def ArtistDirectory(url):
 		mylist=zip((match),(name))
 		for match,name in mylist:
 			addDir(name,base_url+'/artist/'+match,1,'http://www.godtube.com/resource/user/profile/'+match[:-1]+'.jpg')
-		if 1==1:
-                	xbmc.executebuiltin('Container.SetViewMode(50)')
 	except:
         	xbmc.executebuiltin('XBMC.Notification("%s","%s",%d,"%s")' %
                             	('Request Timed Out', 'Please try again.',5000, timeout_thumb))
@@ -245,21 +235,22 @@ print "Name: "+str(name)
 if mode==None or url==None or len(url)<1:
         print ""
         MAIN()
-       
 elif mode==1:
         print ""+url
         ADDLINKS(url)
-        
 elif mode==2:
         print ""+url
         Search(url)
-
 elif mode==3:
         print ""+url
         Categories(url)
-
 elif mode==4:
         print ""+url
         ArtistDirectory(url)
-
+if mode==1:
+	xbmc.executebuiltin("Container.SetViewMode(500)")
+if mode==None:
+	xbmc.executebuiltin("Container.SetViewMode(50)")
+if mode>=2:
+	xbmc.executebuiltin("Container.SetViewMode(50)")
 xbmcplugin.endOfDirectory(int(sys.argv[1]))
