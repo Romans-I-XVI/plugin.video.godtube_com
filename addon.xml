@@ -2,7 +2,7 @@
 <addon
  id="plugin.video.godtube_com"
     version="1.0.0"
-    name="Godtube"
+    name="GodTube"
     provider-name="Romans I XVI"
     >
     <requires>
