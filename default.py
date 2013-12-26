@@ -8,6 +8,7 @@ except:
 	cache = StorageServer.StorageServer("GodTube")
 
 settings = xbmcaddon.Addon( id = 'plugin.video.godtube_com' )
+translation = settings.getLocalizedString
 next_thumb = os.path.join( settings.getAddonInfo( 'path' ), 'thumbnails', 'nextpage.png' )
 browse_thumb = os.path.join( settings.getAddonInfo( 'path' ), 'thumbnails', 'explore.png' )
 search_thumb = os.path.join( settings.getAddonInfo( 'path' ), 'thumbnails', 'search.png' )
@@ -18,8 +19,8 @@ base_url='http://www.godtube.com'
 ##################################################################################################################################
 
 def MAIN():
-	addDir('Explore GodTube',base_url,3, browse_thumb)
-        addDir('Search',base_url,2, search_thumb)
+	addDir(translation(30001),base_url,3, browse_thumb)
+        addDir(translation(30002),base_url,2, search_thumb)
 
 ##################################################################################################################################
         
@@ -69,7 +70,7 @@ def ADDLINKS(url):
 			pass
 		mylist=zip((name),(thumbnail))
 		pDialog = xbmcgui.DialogProgress()
-		pDialog.create('GodTube', 'Initializing script...')
+		pDialog.create('GodTube', 'Initializing Script...')
 		try:
 			percent=len(mylist)
 			percent=100/float(percent)
@@ -91,7 +92,7 @@ def ADDLINKS(url):
 				url=url+'.flv'
 			if "/resource/user/profile" not in thumbnail:
 				totalpercent=totalpercent+percent
-				pDialog.update(totalpercent, 'Loading Videos...')
+				pDialog.update(totalpercent, translation(30103)+'...')
                         	addLink(name,url,thumbnail)
                 if nextpage:
                         addDir('More',nextpage,1,next_thumb)
@@ -109,7 +110,7 @@ def Search(url):
                 search_list = eval(search_hist)
 	except:
 		search_list.insert(0, search_hist)	
-        addDir('Search...',base_url+'/search/?q=',1, search_thumb, search_function=1)
+        addDir(translation(30002)+'...',base_url+'/search/?q=',1, search_thumb, search_function=1)
 	try:
 		for name in search_list:
 			if not name == '':
@@ -121,15 +122,15 @@ def Search(url):
 ##############################################################################################################
 
 def Categories(url):
-	addDir('Artist Directory',base_url+'/artists-directory/',4,'')
-	addDir('Music Videos',base_url+'/music-videos/',1,browse_thumb)	
-	addDir('Ministry Videos',base_url+'/ministry-videos/',1,browse_thumb)
-	addDir('Inspirational Videos',base_url+'/inspirational-videos/',1,browse_thumb)
-	addDir('Comedy Videos',base_url+'/comedy-videos/',1,browse_thumb)
-	addDir('Cute Videos',base_url+'/cute-videos/',1,browse_thumb)
-	addDir('Movies',base_url+'/movies/',1,browse_thumb)
-	addDir('Sermons',base_url+'/sermon-videos/',1,browse_thumb)
-	addDir('Spanish',base_url+'/espa%C3%B1ol-videos/',1,'')
+	addDir(translation(30003),base_url+'/artists-directory/',4,'')
+	addDir(translation(30004),base_url+'/music-videos/',1,browse_thumb)	
+	addDir(translation(30005),base_url+'/ministry-videos/',1,browse_thumb)
+	addDir(translation(30006),base_url+'/inspirational-videos/',1,browse_thumb)
+	addDir(translation(30007),base_url+'/comedy-videos/',1,browse_thumb)
+	addDir(translation(30008),base_url+'/cute-videos/',1,browse_thumb)
+	addDir(translation(30009),base_url+'/movies/',1,browse_thumb)
+	addDir(translation(30101),base_url+'/sermon-videos/',1,browse_thumb)
+	addDir(translation(30102),base_url+'/espa%C3%B1ol-videos/',1,'')
 
 ##################################################################################################################################
 
@@ -147,7 +148,7 @@ def ArtistDirectory(url):
 			addDir(name,base_url+'/artist/'+match,1,'http://www.godtube.com/resource/user/profile/'+match[:-1]+'.jpg')
 	except:
         	xbmc.executebuiltin('XBMC.Notification("%s","%s",%d,"%s")' %
-                            	('Request Timed Out', 'Please try again.',5000, timeout_thumb))
+                            	(translation(30104), translation(30105),5000, timeout_thumb))
 		PREVIOUS()
 	
 
