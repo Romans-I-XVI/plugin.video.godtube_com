@@ -110,7 +110,7 @@ def Search(url):
                 search_list = eval(search_hist)
 	except:
 		search_list.insert(0, search_hist)	
-        addDir(translation(30002)+'...',base_url+'/search/?q=',1, search_thumb, search_function=1)
+        addDir(translation(30106)+'...',base_url+'/search/?q=',1, search_thumb, search_function=1)
 	try:
 		for name in search_list:
 			if not name == '':
