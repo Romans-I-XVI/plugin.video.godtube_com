@@ -93,6 +93,7 @@ def ADDLINKS(url):
 			if "/resource/user/profile" not in thumbnail:
 				totalpercent=totalpercent+percent
 				pDialog.update(totalpercent, translation(30103)+'...')
+				name=name.replace('&quot;','"')
                         	addLink(name,url,thumbnail)
                 if nextpage:
                         addDir('More',nextpage,1,next_thumb)
