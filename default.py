@@ -279,6 +279,7 @@ elif mode==4:
         print ""+url
         ArtistDirectory(url)
 if mode==1:
+	xbmc.sleep(100)
 	xbmc.executebuiltin("Container.SetViewMode(500)")
 if mode==None:
 	xbmc.executebuiltin("Container.SetViewMode(50)")
