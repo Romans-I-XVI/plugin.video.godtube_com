@@ -10,4 +10,4 @@ Version 1.0.0
 Version 1.0.1
 -Added a cached Artist Directory file since the website's loading of the file is intermitten
 Version 1.0.2
--Added dummy multiprocessing module
+-Switched from multiprocessing module to multithreading because of android incompatibility
