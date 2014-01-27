@@ -1,7 +1,10 @@
 import urllib,urllib2,re,xbmcplugin,xbmcgui,os,xbmcaddon,sys,xbmcvfs,subprocess
 import artistdir
-import multiprocessing as mp
 dbg = False
+try:
+	import multiprocessing as mp
+except:
+	import multiprocessingdummy as mp
 try:
 	import StorageServer
 	cache = StorageServer.StorageServer("GodTube")
